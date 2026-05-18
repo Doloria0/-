@@ -88,7 +88,52 @@ function saveAndRenderLocal() {
     if (window.refreshPosts) window.refreshPosts();
 }
 
+/* --- Inquiry Modal Controls --- */
+function openModal() {
+    const modal = document.getElementById('inquiryModal');
+    modal.classList.add('active');
+    document.body.style.overflow = 'hidden'; // Prevent scroll
+}
+
+function closeModal() {
+    const modal = document.getElementById('inquiryModal');
+    modal.classList.remove('active');
+    document.body.style.overflow = ''; // Restore scroll
+}
+
+// Close modal when clicking outside content
+window.onclick = function(event) {
+    const modal = document.getElementById('inquiryModal');
+    if (event.target == modal) {
+        closeModal();
+    }
+}
+
+function handleInquiry(event) {
+    event.preventDefault();
+    const name = document.getElementById('inquiryName').value;
+    const email = document.getElementById('inquiryEmail').value;
+    
+    // Simulate sending
+    const btn = event.target.querySelector('button');
+    const originalText = btn.innerText;
+    btn.innerText = '전송 중...';
+    btn.disabled = true;
+
+    setTimeout(() => {
+        alert(`${name}님, 문의가 정상적으로 접수되었습니다.\n등록하신 이메일(${email})로 곧 답변드리겠습니다.`);
+        btn.innerText = originalText;
+        btn.disabled = false;
+        event.target.reset();
+        closeModal();
+    }, 1500);
+}
+
+// GSAP Animations Re-enabled for smoother reveal
 document.addEventListener('DOMContentLoaded', () => {
+    gsap.from('.logo', { y: -20, opacity: 0, duration: 1, ease: 'power3.out' });
+    gsap.from('nav ul li', { y: -20, opacity: 0, duration: 1, stagger: 0.1, ease: 'power3.out' });
+
     if (typeof gsap !== 'undefined') {
         gsap.registerPlugin(ScrollTrigger);
         window.addEventListener('scroll', () => {
@@ -98,7 +143,8 @@ document.addEventListener('DOMContentLoaded', () => {
         });
         gsap.to(".scroll-progress", { width: "100%", ease: "none", scrollTrigger: { scrub: 0.3 } });
         gsap.from(".hero-title", { y: 50, opacity: 0, duration: 1.2, delay: 0.5 });
-        // Stagger Reveals
+        /* 
+        // Stagger Reveals - Disabled for immediate visibility
         const revealSections = document.querySelectorAll(".section");
         revealSections.forEach(section => {
             const animElements = section.querySelectorAll(".section-tag, .section-title, .product-card, .ceo-image-container, .ceo-content, .community-container");
@@ -117,6 +163,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 });
             }
         });
+        */
     }
 
     const postForm = document.getElementById('community-form');
